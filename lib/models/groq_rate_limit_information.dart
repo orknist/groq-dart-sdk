@@ -18,11 +18,11 @@ class GroqRateLimitInformation {
 
   /// x-ratelimit-reset-requests
   /// Always refers to Requests Per Day (RPD)
-  int resetRequests;
+  String resetRequests;
 
   /// x-ratelimit-reset-tokens
   /// Always refers to Tokens Per Minute (TPM)
-  int resetTokens;
+  String resetTokens;
 
   /// x-ratelimit-limit-audio-seconds
   /// Only comes with audio transcriptions

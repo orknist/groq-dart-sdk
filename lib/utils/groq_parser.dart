@@ -38,10 +38,10 @@ class GroqParser {
     return GroqRateLimitInformation(
       limitRequests: int.tryParse(headers['x-ratelimit-limit-requests'] ?? '0') ?? 0,
       remainingRequests: int.tryParse(headers['x-ratelimit-remaining-requests'] ?? '0') ?? 0,
-      resetRequests: int.tryParse(headers['x-ratelimit-reset-requests'] ?? '0') ?? 0,
+      resetRequests: headers['x-ratelimit-reset-requests'] ?? '',
       limitTokens: int.tryParse(headers['x-ratelimit-limit-tokens'] ?? '0') ?? 0,
       remainingTokens: int.tryParse(headers['x-ratelimit-remaining-tokens'] ?? '0') ?? 0,
-      resetTokens: int.tryParse(headers['x-ratelimit-reset-tokens'] ?? '0') ?? 0,
+      resetTokens: headers['x-ratelimit-reset-tokens'] ?? '',
       limitAudioSeconds: int.tryParse(headers['x-ratelimit-limit-audio-seconds'] ?? '0') ?? 0,
       remainingAudioSeconds: int.tryParse(headers['x-ratelimit-remaining-audio-seconds'] ?? '0') ?? 0,
       resetAudioSeconds: int.tryParse(headers['x-ratelimit-reset-audio-seconds'] ?? '0') ?? 0,
