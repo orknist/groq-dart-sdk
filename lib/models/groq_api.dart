@@ -15,22 +15,16 @@ import 'package:groq_sdk/utils/groq_parser.dart';
 import 'package:http/http.dart' as http;
 
 class GroqApi {
-  static const String _chatCompletionUrl =
-      'https://api.groq.com/openai/v1/chat/completions';
-  static const String _getModelBaseUrl =
-      'https://api.groq.com/openai/v1/models';
-  static const String _getAudioTranscriptionUrl =
-      'https://api.groq.com/openai/v1/audio/transcriptions';
-  static const String _getAudioTranslationUrl =
-      'https://api.groq.com/openai/v1/audio/translations';
+  static const String _chatCompletionUrl = 'https://api.groq.com/openai/v1/chat/completions';
+  static const String _getModelBaseUrl = 'https://api.groq.com/openai/v1/models';
+  static const String _getAudioTranscriptionUrl = 'https://api.groq.com/openai/v1/audio/transcriptions';
+  static const String _getAudioTranslationUrl = 'https://api.groq.com/openai/v1/audio/translations';
 
   ///Returns the model metadata from groq with the given model id
   static Future<GroqLLMModel> getModel(String modelId, String apiKey) async {
-    final response =
-        await AuthHttp.get(url: '$_getModelBaseUrl/$modelId', apiKey: apiKey);
+    final response = await AuthHttp.get(url: '$_getModelBaseUrl/$modelId', apiKey: apiKey);
     if (response.statusCode == 200) {
-      return GroqParser.llmModelFromJson(
-          json.decode(utf8.decode(response.bodyBytes, allowMalformed: true)));
+      return GroqParser.llmModelFromJson(json.decode(utf8.decode(response.bodyBytes, allowMalformed: true)));
     } else {
       throw GroqException.fromResponse(response);
     }
@@ -40,8 +34,7 @@ class GroqApi {
   static Future<List<GroqLLMModel>> listModels(String apiKey) async {
     final response = await AuthHttp.get(url: _getModelBaseUrl, apiKey: apiKey);
     if (response.statusCode == 200) {
-      final Map<String, dynamic> jsonData =
-          json.decode(utf8.decode(response.bodyBytes, allowMalformed: true));
+      final Map<String, dynamic> jsonData = json.decode(utf8.decode(response.bodyBytes, allowMalformed: true));
       final List<dynamic> jsonList = jsonData['data'] as List<dynamic>;
       return jsonList.map((json) => GroqParser.llmModelFromJson(json)).toList();
     } else {
@@ -50,8 +43,7 @@ class GroqApi {
   }
 
   ///Returns a new chat instance with the given model id
-  static Future<(GroqResponse, GroqUsage, GroqRateLimitInformation)>
-      getNewChatCompletion({
+  static Future<(GroqResponse, GroqUsage, GroqRateLimitInformation)> getNewChatCompletion({
     required String apiKey,
     required GroqMessage prompt,
     required GroqChat chat,
@@ -60,8 +52,7 @@ class GroqApi {
     List<Map<String, dynamic>> messages = [];
     List<GroqConversationItem> allMessages = chat.allMessages;
     if (chat.allMessages.length > chat.settings.maxConversationalMemoryLength) {
-      allMessages.removeRange(
-          0, allMessages.length - chat.settings.maxConversationalMemoryLength);
+      allMessages.removeRange(0, allMessages.length - chat.settings.maxConversationalMemoryLength);
     }
     for (final message in allMessages) {
       messages.add(message.request.toJson());
@@ -71,25 +62,16 @@ class GroqApi {
     jsonMap['messages'] = messages;
     jsonMap['model'] = chat.model;
     jsonMap.addAll(chat.settings.toJson());
-    final response = await AuthHttp.post(
-        url: _chatCompletionUrl, apiKey: apiKey, body: jsonMap);
+    final response = await AuthHttp.post(url: _chatCompletionUrl, apiKey: apiKey, body: jsonMap);
     //Rate Limit information
-    final rateLimitInfo =
-        GroqParser.rateLimitInformationFromHeaders(response.headers);
+    final rateLimitInfo = GroqParser.rateLimitInformationFromHeaders(response.headers);
     if (response.statusCode < 300) {
-      final Map<String, dynamic> jsonData =
-          json.decode(utf8.decode(response.bodyBytes, allowMalformed: true));
-      final GroqResponse groqResponse =
-          GroqParser.groqResponseFromJson(jsonData);
-      final GroqUsage groqUsage =
-          GroqParser.groqUsageFromChatJson(jsonData["usage"]);
+      final Map<String, dynamic> jsonData = json.decode(utf8.decode(response.bodyBytes, allowMalformed: true));
+      final GroqResponse groqResponse = GroqParser.groqResponseFromJson(jsonData);
+      final GroqUsage groqUsage = GroqParser.groqUsageFromChatJson(jsonData["usage"]);
       return (groqResponse, groqUsage, rateLimitInfo);
     } else if (response.statusCode == 429) {
-      throw GroqRateLimitException(
-        retryAfter: Duration(
-          seconds: int.tryParse(response.headers['retry-after'] ?? '0') ?? 0,
-        ),
-      );
+      throw GroqRateLimitException(retryAfter: Duration(seconds: int.tryParse(response.headers['retry-after'] ?? '0') ?? 0));
     } else {
       throw GroqException.fromResponse(response);
     }
@@ -101,8 +83,7 @@ class GroqApi {
     required String filePath,
     required String modelId,
   }) async {
-    var request =
-        http.MultipartRequest('POST', Uri.parse(_getAudioTranscriptionUrl));
+    var request = http.MultipartRequest('POST', Uri.parse(_getAudioTranscriptionUrl));
 
     request.headers['Authorization'] = 'Bearer $apiKey';
     request.headers['Content-Type'] = 'multipart/form-data';
@@ -116,14 +97,10 @@ class GroqApi {
     if (response.statusCode == 200) {
       final audioResponse = GroqParser.audioResponseFromJson(jsonBody);
       print(jsonBody);
-      // final usage =
-      //     GroqParser.groqUsageFromAudioJson(jsonBody['x_groq']['usage']);
-      final rateLimitInfo =
-          GroqParser.rateLimitInformationFromHeaders(response.headers);
+      final rateLimitInfo = GroqParser.rateLimitInformationFromHeaders(response.headers);
       return (audioResponse, rateLimitInfo);
     } else {
-      throw GroqException(
-          statusCode: response.statusCode, error: GroqError.fromJson(jsonBody));
+      throw GroqException(statusCode: response.statusCode, error: GroqError.fromJson(jsonBody));
     }
   }
 
@@ -134,8 +111,7 @@ class GroqApi {
     required String modelId,
     required double temperature,
   }) async {
-    var request =
-        http.MultipartRequest('POST', Uri.parse(_getAudioTranslationUrl));
+    var request = http.MultipartRequest('POST', Uri.parse(_getAudioTranslationUrl));
 
     request.headers['Authorization'] = 'Bearer $apiKey';
     request.headers['Content-Type'] = 'multipart/form-data';
@@ -149,12 +125,10 @@ class GroqApi {
     final jsonBody = json.decode(responseBody);
     if (response.statusCode == 200) {
       final audioResponse = GroqParser.audioResponseFromJson(jsonBody);
-      final rateLimitInfo =
-          GroqParser.rateLimitInformationFromHeaders(response.headers);
+      final rateLimitInfo = GroqParser.rateLimitInformationFromHeaders(response.headers);
       return (audioResponse, rateLimitInfo);
     } else {
-      throw GroqException(
-          statusCode: response.statusCode, error: GroqError.fromJson(jsonBody));
+      throw GroqException(statusCode: response.statusCode, error: GroqError.fromJson(jsonBody));
     }
   }
 }

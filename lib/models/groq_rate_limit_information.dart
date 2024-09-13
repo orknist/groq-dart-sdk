@@ -1,26 +1,56 @@
+/// Source: https://console.groq.com/docs/rate-limits
 class GroqRateLimitInformation {
-  ///The total number of requests allowed per day
-  int totalRequestsPerDay;
+  /// x-ratelimit-limit-requests
+  /// Always refers to Requests Per Day (RPD).
+  int limitRequests;
 
-  ///The number of requests remaining for the day
-  int remainingRequestsToday;
+  /// x-ratelimit-limit-tokens
+  /// Always refers to Tokens Per Minute (TPM)
+  int limitTokens;
 
-  ///The total number of tokens allowed per minute
-  int totalTokensPerMinute;
+  /// x-ratelimit-remaining-requests
+  /// Always refers to Requests Per Day (RPD)
+  int remainingRequests;
 
-  ///The number of tokens remaining for the minute
-  int remainingTokensThisMinute;
+  /// x-ratelimit-remaining-tokens
+  /// Always refers to Tokens Per Minute (TPM)
+  int remainingTokens;
 
-  ///Information about the current rate limit of the Groq API
+  /// x-ratelimit-reset-requests
+  /// Always refers to Requests Per Day (RPD)
+  int resetRequests;
+
+  /// x-ratelimit-reset-tokens
+  /// Always refers to Tokens Per Minute (TPM)
+  int resetTokens;
+
+  /// x-ratelimit-limit-audio-seconds
+  /// Only comes with audio transcriptions
+  int limitAudioSeconds;
+
+  /// x-ratelimit-remaining-audio-seconds
+  /// Only comes with audio transcriptions
+  int remainingAudioSeconds;
+
+  /// x-ratelimit-reset-audio-seconds
+  /// Only comes with audio transcriptions
+  int resetAudioSeconds;
+
+  /// Information about the current rate limit of the Groq API
   GroqRateLimitInformation({
-    required this.totalRequestsPerDay,
-    required this.remainingRequestsToday,
-    required this.totalTokensPerMinute,
-    required this.remainingTokensThisMinute,
+    required this.limitRequests,
+    required this.limitTokens,
+    required this.remainingRequests,
+    required this.remainingTokens,
+    required this.resetRequests,
+    required this.resetTokens,
+    required this.limitAudioSeconds,
+    required this.remainingAudioSeconds,
+    required this.resetAudioSeconds,
   });
 
   @override
   String toString() {
-    return 'GroqRateLimitInformation{totalRequestsPerDay: $totalRequestsPerDay, remainingRequestsPerDay: $remainingRequestsToday, totalTokensPerMinute: $totalTokensPerMinute, remainingTokensPerMinute: $remainingTokensThisMinute}';
+    return 'GroqRateLimitInformation { limitRequests: $limitRequests, limitTokens: $limitTokens, remainingRequests: $remainingRequests, remainingTokens: $remainingTokens, resetRequests: $resetRequests, resetTokens: $resetTokens, limitAudioSeconds: $limitAudioSeconds, remainingAudioSeconds: $remainingAudioSeconds, resetAudioSeconds: $resetAudioSeconds }';
   }
 }

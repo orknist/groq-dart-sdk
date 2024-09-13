@@ -142,14 +142,12 @@ class Groq {
   /// );
   ///
   /// ```
-  Future<(bool, GroqLlamaGuardCategory?, GroqUsage, GroqRateLimitInformation?)>
-      isTextHarmful({
+  Future<(bool, GroqLlamaGuardCategory?, GroqUsage, GroqRateLimitInformation?)> isTextHarmful({
     required String text,
     String? customApiKey,
   }) async {
     final specificApiKey = customApiKey ?? apiKey;
-    final chat = GroqChat(GroqModels.llama_guard_3_8b, specificApiKey,
-        GroqChatSettings.defaults());
+    final chat = GroqChat(GroqModels.llama_guard_3_8b, specificApiKey, GroqChatSettings.defaults());
     final (response, usage) = await chat.sendMessage(text);
     final answerString = response.choices.first.message;
     bool isHarmful = false;
@@ -159,14 +157,10 @@ class Groq {
       final List<String> answerList = answerString.trim().split('\n');
       print(answerList.toString());
       if (answerList.length < 2) {
-        throw GroqException(
-            statusCode: 400,
-            error: GroqError(
-                message: 'Received invalid response', type: 'InvalidResponse'));
+        throw GroqException(statusCode: 400, error: GroqError(message: 'Received invalid response', type: 'InvalidResponse'));
       }
       String harmfulCategoryString = answerList[1];
-      harmfulCategory =
-          GroqParser.groqLlamaGuardCategoryFromString(harmfulCategoryString);
+      harmfulCategory = GroqParser.groqLlamaGuardCategoryFromString(harmfulCategoryString);
     }
     return (isHarmful, harmfulCategory, usage, chat.rateLimitInfo);
   }

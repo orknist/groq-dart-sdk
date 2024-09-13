@@ -24,10 +24,8 @@ class GroqModels {
   static const String distil_whisper_large_v3_en = 'distil-whisper-large-v3-en';
   static const String llama31_70b_versatile = 'llama-3.1-70b-versatile';
   static const String llama31_8b_instant = 'llama-3.1-8b-instant';
-  static const String llama3_groq_70b_tool_use_preview =
-      'llama3-groq-70b-8192-tool-use-preview';
-  static const String llama3_groq_8b_tool_use_preview =
-      'llama3-groq-8b-8192-tool-use-preview';
+  static const String llama3_groq_70b_tool_use_preview = 'llama3-groq-70b-8192-tool-use-preview';
+  static const String llama3_groq_8b_tool_use_preview = 'llama3-groq-8b-8192-tool-use-preview';
   static const String llama_guard_3_8b = 'llama-guard-3-8b';
 }
 
@@ -46,7 +44,7 @@ class GroqLLMModel {
 
   @override
   String toString() {
-    return 'GroqLLMModel{modelId: $modelId, ownedBy: $ownedBy, isCurrentlyActive: $isCurrentlyActive, contextWindow: $contextWindow}';
+    return 'GroqLLMModel { modelId: $modelId, ownedBy: $ownedBy, isCurrentlyActive: $isCurrentlyActive, contextWindow: $contextWindow }';
   }
 }
 

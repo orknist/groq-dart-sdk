@@ -43,6 +43,6 @@ class GroqMessage {
 
   @override
   String toString() {
-    return 'GroqMessage{content: $content, username: $username, role: $role}';
+    return 'GroqMessage { content: $content, username: $username, role: $role }';
   }
 }

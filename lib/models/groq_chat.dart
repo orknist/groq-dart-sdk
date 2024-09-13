@@ -60,12 +60,10 @@ class GroqChatSettings {
     this.stop,
     this.maxConversationalMemoryLength = 1024,
   }) {
-    assert(temperature >= 0.0 && temperature <= 2.0,
-        'Temperature must be between 0.0 and 2.0');
+    assert(temperature >= 0.0 && temperature <= 2.0, 'Temperature must be between 0.0 and 2.0');
     assert(maxTokens > 0, 'Max tokens must be greater than 0');
     assert(topP >= 0.0 && topP <= 1.0, 'Top P must be between 0.0 and 1.0');
-    assert(maxConversationalMemoryLength > 0,
-        'Max conversational memory length must be greater than 0');
+    assert(maxConversationalMemoryLength > 0, 'Max conversational memory length must be greater than 0');
     // assert(choicesCount > 0, 'Choices count must be greater than 0');
   }
 
@@ -105,8 +103,7 @@ class GroqChatSettings {
       maxTokens: maxTokens ?? this.maxTokens,
       topP: topP ?? this.topP,
       stop: stop ?? this.stop,
-      maxConversationalMemoryLength:
-          maxConversationalMemoryLength ?? this.maxConversationalMemoryLength,
+      maxConversationalMemoryLength: maxConversationalMemoryLength ?? this.maxConversationalMemoryLength,
     );
   }
 }
@@ -117,8 +114,7 @@ class GroqChat {
   final List<GroqConversationItem> _conversationItems = [];
   GroqChatSettings _settings;
   GroqRateLimitInformation? _rateLimitInfo;
-  final StreamController<ChatEvent> _streamController =
-      StreamController.broadcast();
+  final StreamController<ChatEvent> _streamController = StreamController.broadcast();
 
   ///GroqChat constructor
   ///[model] the model id
@@ -230,10 +226,7 @@ class GroqChat {
   ///```
   int get totalTokens {
     if (_conversationItems.isEmpty) return 0;
-    return _conversationItems.fold(
-        0,
-        (previousValue, element) =>
-            previousValue + (element.usage?.totalTokens ?? 0));
+    return _conversationItems.fold(0, (previousValue, element) => previousValue + (element.usage?.totalTokens ?? 0));
   }
 
   ///Sends a new request message to the chat
@@ -252,8 +245,7 @@ class GroqChat {
     GroqMessageRole role = GroqMessageRole.user,
     String? username,
   }) async {
-    final request =
-        GroqMessage(content: prompt, role: role, username: username);
+    final request = GroqMessage(content: prompt, role: role, username: username);
     _streamController.add(RequestChatEvent(request));
     final item = GroqConversationItem(_model, request);
     GroqResponse response;

@@ -10,11 +10,9 @@ void main(List<String> arguments) async {
   }
 
   //Sending an audio file for transcription
-  final (response, rateLimitInfo) = await groq.transcribeAudio(
-      audioFileUrl: 'res/audio.m4a', modelId: GroqModels.whisper_large_v3);
+  final (response, rateLimitInfo) = await groq.transcribeAudio(audioFileUrl: 'res/audio.m4a', modelId: GroqModels.whisper_large_v3);
 
   //Printing some received information
   print('Transcription: ${response.text}');
-  print(
-      'Rate limit remaining Tokens: ${rateLimitInfo.remainingTokensThisMinute}');
+  print('Rate limit remaining Tokens: ${rateLimitInfo.remainingTokens}');
 }

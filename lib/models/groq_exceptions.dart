@@ -14,7 +14,7 @@ class GroqError {
       );
 
   @override
-  String toString() => 'GroqError (Type: $type): $message';
+  String toString() => 'GroqError { type: $type, message: $message }';
 }
 
 class GroqException implements Exception {
@@ -24,8 +24,7 @@ class GroqException implements Exception {
   GroqException({required this.statusCode, required this.error});
 
   factory GroqException.fromResponse(http.Response response) {
-    final Map<String, dynamic> jsonBody =
-        json.decode(utf8.decode(response.bodyBytes, allowMalformed: true));
+    final Map<String, dynamic> jsonBody = json.decode(utf8.decode(response.bodyBytes, allowMalformed: true));
 
     if (jsonBody.containsKey('error')) {
       final groqError = GroqError.fromJson(jsonBody);
@@ -43,7 +42,7 @@ class GroqException implements Exception {
   }
 
   @override
-  String toString() => 'GroqException (Status Code: $statusCode): $error';
+  String toString() => 'GroqException { statusCode: $statusCode, error: $error }';
 }
 
 class GroqRateLimitException implements GroqException {
@@ -54,13 +53,11 @@ class GroqRateLimitException implements GroqException {
   });
 
   @override
-  GroqError get error =>
-      GroqError(message: 'rate-limit-exceeded', type: 'rate_limit');
+  GroqError get error => GroqError(message: 'rate-limit-exceeded', type: 'rate_limit');
 
   @override
   int get statusCode => 429;
 
   @override
-  String toString() =>
-      'GroqRateLimitException (Status Code: $statusCode): $error (Retry After: ${retryAfter.inSeconds} seconds)';
+  String toString() => 'GroqRateLimitException { statusCode: $statusCode, error: $error, retryAfter: $retryAfter }';
 }
